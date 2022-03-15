@@ -2,10 +2,11 @@ import paho.mqtt.client as mqtt
 import json
 import rrdtool
 
-host = "mosquitto.home"
+host = "192.168.1.6"
 port = 1883
 topic = 'dragino/0183FC63/data'
 sensor_db = "./db/sensordata.rrd"
+client = "record_sensor_data"
 
 def on_connect(client, userdata, flags, rc):
     print("connected...")
@@ -21,7 +22,7 @@ def on_message(client, userdata, msg):
     print(temperature, humidity, battery)
     rrdtool.update(sensor_db, "N:" + str(float(temperature)) + ":" + str(float(humidity)) + ":" + str(float(battery)))
 
-client = mqtt.Client("rrd")
+client = mqtt.Client(client)
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect(host, port)
